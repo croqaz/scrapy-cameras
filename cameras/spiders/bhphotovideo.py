@@ -20,7 +20,7 @@ class BhPhotoVideoSpider(scrapy.Spider):
             try:
                 yield self.extract_one(item)
             except Exception as err:
-                self.logger.warning('Error extracting item: %s', err)
+                self.logger.warning('Error extracting item: %s %s', self.name, err)
 
         next_page = response.css('.pagination-zone .pn-next::attr(href)').get()
         if next_page:
@@ -39,4 +39,5 @@ class BhPhotoVideoSpider(scrapy.Spider):
             'mfr': mfr,
             'sku': idata['sku'],
             'price': float(idata['price']),
+            'spider': self.name,
         }
