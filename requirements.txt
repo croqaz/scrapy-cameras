@@ -1,1 +1,2 @@
-scrapy
+scrapy~=1.6.0
+html-text~=0.5.0

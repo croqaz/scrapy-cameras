@@ -10,3 +10,5 @@ import scrapy
 
 class CamerasItem(scrapy.Item):
     name = scrapy.Field()
+    price = scrapy.Field()
+    spider = scrapy.Field()
