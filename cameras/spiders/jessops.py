@@ -24,7 +24,7 @@ class JessopsSpider(scrapy.Spider):
         next_page = response.xpath('//ul[@class="f-pagination"]//i[text()="navigate_next"]/../@href').get()
         if next_page:
             PAGE += 1
-            if PAGE >= MAX_PAGES:
+            if MAX_PAGES > 0 and PAGE > MAX_PAGES:
                 return
             self.logger.info(f'--- {self.name} page {PAGE} ---')
             yield response.follow(next_page, callback=self.parse)

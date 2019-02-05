@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import scrapy
+from html_text import extract_text
+from .util import utc_time
 
 PAGE = 1
 MAX_PAGES = 5
@@ -25,17 +27,18 @@ class BhPhotoVideoSpider(scrapy.Spider):
         next_page = response.css('.pagination-zone .pn-next::attr(href)').get()
         if next_page:
             PAGE += 1
-            if PAGE >= MAX_PAGES:
+            if MAX_PAGES > 0 and PAGE > MAX_PAGES:
                 return
             self.logger.info(f'--- {self.name} page {PAGE} ---')
             yield response.follow(next_page, callback=self.parse)
 
     def extract_one(self, item):
-        name = item.css('a.c5 span[itemprop="name"]::text').get().strip()
+        name = extract_text(item.css('.desc-zone a[itemprop="url"]').get(), guess_layout=False)
         mfr = item.css('.skus .sku[data-selenium="sku"]::text').get()
         idata = json.loads(item.css('::attr(data-itemdata)').get())
         return {
-            'name': name,
+            'T': utc_time(),
+            'name': name.strip(),
             'mfr': mfr,
             'sku': idata['sku'],
             'price': float(idata['price']),
