@@ -9,6 +9,9 @@ import scrapy
 
 
 class CamerasItem(scrapy.Item):
+    T = scrapy.Field()
+    uid = scrapy.Field()
+    link = scrapy.Field()
     name = scrapy.Field()
     price = scrapy.Field()
     spider = scrapy.Field()

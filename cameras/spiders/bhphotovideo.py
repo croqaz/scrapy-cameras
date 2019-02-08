@@ -2,13 +2,11 @@
 import json
 import scrapy
 from html_text import extract_text
+from .base import BaseSpider
 from .util import utc_time
 
-PAGE = 1
-MAX_PAGES = 5
 
-
-class BhPhotoVideoSpider(scrapy.Spider):
+class BhPhotoVideoSpider(BaseSpider):
     name = 'bhphotovideo'
     allowed_domains = ['bhphotovideo.com', 'www.bhphotovideo.com']
     start_urls = [
@@ -17,30 +15,26 @@ class BhPhotoVideoSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        global PAGE
         for item in response.css('.main-content .items .item'):
             try:
                 yield self.extract_one(item)
             except Exception as err:
-                self.logger.warning('Error extracting item: %s %s', self.name, err)
+                self.logger.warning('Extract item error: %s %s', self.name, err)
 
         next_page = response.css('.pagination-zone .pn-next::attr(href)').get()
-        if next_page:
-            PAGE += 1
-            if MAX_PAGES > 0 and PAGE > MAX_PAGES:
-                return
-            self.logger.info(f'--- {self.name} page {PAGE} ---')
-            yield response.follow(next_page, callback=self.parse)
+        yield self.follow_next_page(next_page, response)
 
     def extract_one(self, item):
         name = extract_text(item.css('.desc-zone a[itemprop="url"]').get(), guess_layout=False)
+        link = item.css('.desc-zone h5 a::attr(href)').get()
         mfr = item.css('.skus .sku[data-selenium="sku"]::text').get()
         idata = json.loads(item.css('::attr(data-itemdata)').get())
         return {
             'T': utc_time(),
-            'name': name.strip(),
+            'link': link,
             'mfr': mfr,
-            'sku': idata['sku'],
+            'name': name.strip(),
             'price': float(idata['price']),
             'spider': self.name,
+            'uid': idata['sku'],
         }

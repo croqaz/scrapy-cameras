@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from .base import BaseSpider
 from .util import utc_time
 
-PAGE = 1
-MAX_PAGES = 3
 
-
-class PhotospecialistIeSpider(scrapy.Spider):
+class PhotoSpecialistIeSpider(BaseSpider):
     name = 'photospecialist.ie'
     allowed_domains = ['photospecialist.ie', 'www.photospecialist.ie']
     start_urls = [
@@ -16,20 +14,14 @@ class PhotospecialistIeSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
-        global PAGE
         for item in response.css('ul.products-grid li.item'):
             try:
                 yield self.extract_one(item, response)
             except Exception as err:
-                self.logger.warning('Error extracting item: %s %s', self.name, err)
+                self.logger.warning('Extract item error: %s %s', self.name, err)
 
-        next_page = response.css('.pages a.next::attr(href)').get()
-        if next_page:
-            PAGE += 1
-            if MAX_PAGES > 0 and PAGE > MAX_PAGES:
-                return
-            self.logger.info(f'--- {self.name} page {PAGE} ---')
-            yield response.follow(next_page, callback=self.parse)
+        next_url = response.css('.pages a.next::attr(href)').get()
+        yield self.follow_next_page(next_url, response)
 
     def extract_one(self, item, response):
         a = item.css('.h2.product-name a')
