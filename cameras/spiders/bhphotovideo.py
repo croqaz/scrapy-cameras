@@ -11,7 +11,8 @@ class BhPhotoVideoSpider(BaseSpider):
     allowed_domains = ['bhphotovideo.com', 'www.bhphotovideo.com']
     start_urls = [
         'https://www.bhphotovideo.com/c/buy/SLR-Digital-Cameras/ci/6222/N/4288586280',
-        'https://www.bhphotovideo.com/c/buy/Mirrorless-System-Cameras/ci/16158/N/4288586281'
+        'https://www.bhphotovideo.com/c/buy/Mirrorless-System-Cameras/ci/16158/N/4288586281',
+        'https://www.bhphotovideo.com/c/buy/Medium-Format-Digital-Cameras/ci/16734/N/4259332394'
     ]
 
     def parse(self, response):

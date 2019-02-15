@@ -14,7 +14,6 @@ BOT_NAME = 'cameras'
 SPIDER_MODULES = ['cameras.spiders']
 NEWSPIDER_MODULE = 'cameras.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.85 Safari/537.36'
 
@@ -45,9 +44,9 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 2.0
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-  'Accept-Language': 'en',
-  'Accept-Encoding':' gzip, deflate'
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en',
+    'Accept-Encoding': ' gzip, deflate'
 }
 
 # Enable or disable spider middlewares
@@ -62,17 +61,25 @@ DEFAULT_REQUEST_HEADERS = {
 #    'cameras.middlewares.CamerasDownloaderMiddleware': 543,
 #}
 
+SPIDERMON_ENABLED = True
+
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
-#EXTENSIONS = {
-#    'scrapy.extensions.telnet.TelnetConsole': None,
-#}
+EXTENSIONS = {
+    'scrapy.extensions.telnet.TelnetConsole': None,
+    'spidermon.contrib.scrapy.extensions.Spidermon': 500,
+}
+
+SPIDERMON_VALIDATION_MODELS = [
+    'cameras.validators.CameraValidator',
+]
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'cameras.pipelines.CamerasPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    # 'cameras.pipelines.CamerasPipeline': 300,
+    'spidermon.contrib.scrapy.pipelines.ItemValidationPipeline': 800,
+}
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
