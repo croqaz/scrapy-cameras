@@ -6,7 +6,7 @@ from .util import utc_time
 
 
 class JessopsSpider(BaseSpider):
-    name = 'jessops'
+    name = 'jessops.com'
     allowed_domains = ['jessops.com', 'www.jessops.com']
     start_urls = [
         'https://www.jessops.com/cameras/digital-slr-cameras',
